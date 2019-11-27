@@ -18,11 +18,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Rich.Common.Base.Configuration;
 using Rich.Common.Base.CoreStart;
+using Rich.Common.Base.RichAutoMapper;
 using Rich.Common.Base.RichDapper;
 using Rich.Common.Base.RichSerilog;
 using Rich.Order.Application.CommonService;
+using Rich.Order.Application.MapProfile;
 using Rich.Order.Domain.User;
 using Rich.Order.Infrastructure.EntityFrameworkCore;
+using Rich.Order.Web.Host.Filter.ExceptionFilter;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 
@@ -43,7 +46,10 @@ namespace Rich.Order.Web.Host
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<RichExctption>();
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerGen(options =>
             {
@@ -75,9 +81,12 @@ namespace Rich.Order.Web.Host
                         .AllowCredentials());
             });
 
-            services.AddConfigurationIdentity();
+            services.AddConfigurationIdentity(_appConfiguration);
 
-
+            services.AddRichAutoMapper((service, map) =>
+            {
+                map.AddProfile(typeof(AccountProfile));
+            },new List<Type>(){ typeof(AccountProfile) });
 
             return services.AddShawnService(option =>
             {
@@ -137,6 +146,9 @@ namespace Rich.Order.Web.Host
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseAuthentication(); // 启用身份验证
+
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {
@@ -150,8 +162,12 @@ namespace Rich.Order.Web.Host
 
     public static class ServiceCollectionExt
     {
-        public static IServiceCollection AddConfigurationIdentity(this IServiceCollection service)
+        public static IServiceCollection AddConfigurationIdentity(this IServiceCollection service,IConfigurationRoot _appConfiguration)
         {
+
+            service.AddDbContext<RichOrderDbContext>(options =>
+                options.UseSqlServer(_appConfiguration["ConnectionStrings:Default"]));
+
             service.AddIdentity<RichOrderUser, IdentityRole>()
                 .AddEntityFrameworkStores<RichOrderDbContext>()
                 .AddDefaultTokenProviders();
@@ -159,20 +175,20 @@ namespace Rich.Order.Web.Host
             service.Configure<IdentityOptions>(options =>
             {
                 // Password settings
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = false;
-                options.Password.RequiredUniqueChars = 6;
+                //options.Password.RequireDigit = true;
+                //options.Password.RequiredLength = 8;
+                //options.Password.RequireNonAlphanumeric = false;
+                //options.Password.RequireUppercase = true;
+                //options.Password.RequireLowercase = false;
+                //options.Password.RequiredUniqueChars = 6;
 
                 // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
                 options.Lockout.MaxFailedAccessAttempts = 10;
-                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.AllowedForNewUsers = false;
 
                 // User settings
-                options.User.RequireUniqueEmail = true;
+                options.User.RequireUniqueEmail = false;
             });
             service.ConfigureApplicationCookie(options =>
             {
@@ -181,7 +197,7 @@ namespace Rich.Order.Web.Host
                 options.Cookie.Expiration = TimeSpan.FromDays(150);
                 // If the LoginPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/Login.
-                options.LoginPath = "/Account/Login";
+                options.LoginPath = "/api/Account/Login";
                 // If the AccessDeniedPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/AccessDenied.
                 options.AccessDeniedPath = "/Account/AccessDenied";
