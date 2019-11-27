@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Rich.Order
+/Rich.Common.Base/bin/Debug/netstandard2.0
+/Rich.Common.Base/obj
+/Rich.Order.Application/bin/Debug/netstandard2.0
+/Rich.Order.Application/obj
+/Rich.Order.Domain/bin/Debug/netstandard2.0
+/Rich.Order.Domain/obj
+/Rich.Order.Host/bin/Debug/netcoreapp2.2
+/Rich.Order.Host/obj
+/Rich.Order.Host/Properties
+/Rich.Order.Infrastructure/bin/Debug/netstandard2.0
+/Rich.Order.Infrastructure/obj
+/Rich.Order.Web.Host/bin/Debug/netcoreapp2.2
+/Rich.Order.Web.Host/obj
+/Rich.Order.Web.Host/Properties
