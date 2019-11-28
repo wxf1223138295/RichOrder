@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Rich.Order.Web.Host.Controllers
@@ -19,6 +20,7 @@ namespace Rich.Order.Web.Host.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<string> Get(int id)
         {
             return "value";

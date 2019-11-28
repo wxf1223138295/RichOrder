@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,18 +21,24 @@ namespace Rich.Order.Web.Host.Controllers
     {
         private SignInManager<RichOrderUser> _signInManager;
         private UserManager<RichOrderUser> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
+        private IHttpContextAccessor _httpContextAccessor;
 
-        public AccountController(SignInManager<RichOrderUser> signInManager, UserManager<RichOrderUser> userManager)
-        {
-            _signInManager = signInManager;
-            _userManager = userManager;
-        }
+
         //[HttpPost("LoginOut")]
         //public async Task<IApiReturnModel<object>> LoginOut()
         //{
         //    await _signInManager.SignOutAsync();
 
         //}
+        public AccountController(SignInManager<RichOrderUser> signInManager, UserManager<RichOrderUser> userManager, RoleManager<IdentityRole> roleManager, IHttpContextAccessor httpContextAccessor)
+        {
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
         [HttpPost("Login")]
         //[Route("Login")]
         public async Task<IApiReturnModel<object>> Login([FromBody]LoginViewModel model)
@@ -46,6 +54,9 @@ namespace Rich.Order.Web.Host.Controllers
             {
                 return new RichApiReturnBoolModel(false, "用户不存在");
             }
+
+           
+
             user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
             //检查密码格式
             var sysbom=await _userManager.CheckPasswordAsync(user, model.Password);
@@ -56,6 +67,8 @@ namespace Rich.Order.Web.Host.Controllers
 
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, false,false);
 
+
+
             if (result.Succeeded)
             {
                 return new RichApiReturnBoolModel(true, "登录成功");
@@ -65,18 +78,50 @@ namespace Rich.Order.Web.Host.Controllers
                 return new RichApiReturnBoolModel(50000,false, "登录失败");
             }
         }
+        [HttpPost("AddRole")]
+        [Authorize]
+        public async Task<IApiReturnModel<object>> AddRole(string roleName)
+        {
+            IdentityRole role=new IdentityRole();
+            role.Name = roleName;
+
+            var result=await _roleManager.CreateAsync(role);
+            if (result.Succeeded)
+            {
+                return new RichApiReturnBoolModel(true, "添加成功");
+            }
+            else
+            {
+                return new RichApiReturnBoolModel(50000, false, "添加失败");
+            }
+        }
+        [HttpPost("LoginOut")]
+        public async void LoginOut()
+        {
+           await _signInManager.SignOutAsync();
+
+        }
         [HttpPost("Register")]
         public async Task<IApiReturnModel<object>> Register([FromBody]RichOrderUser user)
         {
-          
             var passHash=_userManager.PasswordHasher.HashPassword(user, user.PasswordHash);
             user.PasswordHash = passHash;
+
             var result = await _userManager.CreateAsync(user);
-          
-
-
+            
             if (result.Succeeded)
             {
+                var alreadExistUser=await _userManager.FindByNameAsync(user.UserName);
+               
+                List<string> list = new List<string> {"Admin", "Visitor"};
+
+                var res=await _userManager.AddToRolesAsync(alreadExistUser, list);
+                var claims = new Claim[] {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Role,"Admin" ), //[Authorize(Roles = "Admin")]  
+                    new Claim(ClaimTypes.Role,"Visitor" )
+                };
+                var res1 = await _userManager.AddClaimsAsync(alreadExistUser, claims);
 
                 return new RichApiReturnBoolModel(true, "新增用户成功");
             }
