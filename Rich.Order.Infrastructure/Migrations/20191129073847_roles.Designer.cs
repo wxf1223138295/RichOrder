@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rich.Order.Infrastructure.EntityFrameworkCore;
 
 namespace Rich.Order.Infrastructure.Migrations
 {
     [DbContext(typeof(RichOrderDbContext))]
-    partial class RichOrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191129073847_roles")]
+    partial class roles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

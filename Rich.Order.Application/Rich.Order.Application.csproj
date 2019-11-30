@@ -15,5 +15,9 @@
     <Folder Include="RichOrderApplication\Output\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Rich.Order.Domain\Rich.Order.Domain.csproj" />
+  </ItemGroup>
+
 
 </Project>

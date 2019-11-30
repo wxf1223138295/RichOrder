@@ -17,3 +17,8 @@
 /Rich.Order.Web.Host/bin/Debug/netcoreapp2.2
 /Rich.Order.Web.Host/obj
 /Rich.Order.Web.Host/Properties
+/Rich.Common.Base/bin/Release/netstandard2.0
+/Rich.Order.Application/bin/Release/netstandard2.0
+/Rich.Order.Domain/bin/Release/netstandard2.0
+/Rich.Order.Infrastructure/bin/Release/netstandard2.0
+/Rich.Order.Web.Host/bin/Release/netcoreapp2.2

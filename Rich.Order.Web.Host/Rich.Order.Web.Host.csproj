@@ -26,5 +26,10 @@
     <ProjectReference Include="..\Rich.Order.Domain\Rich.Order.Domain.csproj" />
     <ProjectReference Include="..\Rich.Order.Infrastructure\Rich.Order.Infrastructure.csproj" />
   </ItemGroup>
-
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+    <ItemGroup>
+      <DocFile Include="bin\**\**\Rich.Order.Web.Host.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DocFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="false" />
+  </Target>
 </Project>

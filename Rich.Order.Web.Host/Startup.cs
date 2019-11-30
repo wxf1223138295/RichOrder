@@ -151,6 +151,7 @@ namespace Rich.Order.Web.Host
 
             app.UseAuthentication(); // 启用身份验证
 
+
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {
@@ -225,7 +226,9 @@ namespace Rich.Order.Web.Host
             service.AddDbContext<RichOrderDbContext>(options =>
                 options.UseSqlServer(_appConfiguration["ConnectionStrings:Default"]));
 
-            service.AddIdentity<RichOrderUser, IdentityRole>()
+
+            service.AddIdentity<RichOrderUser, RichOrderRole>()
+                .AddRoles<RichOrderRole>()
                 .AddEntityFrameworkStores<RichOrderDbContext>()
                 .AddDefaultTokenProviders();
 
