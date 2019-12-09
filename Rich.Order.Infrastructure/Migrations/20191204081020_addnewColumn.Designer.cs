@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rich.Order.Infrastructure.EntityFrameworkCore;
 
 namespace Rich.Order.Infrastructure.Migrations
 {
     [DbContext(typeof(RichOrderDbContext))]
-    partial class RichOrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191204081020_addnewColumn")]
+    partial class addnewColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,27 +113,15 @@ namespace Rich.Order.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("AlwaysShow");
-
                     b.Property<DateTime>("CreateDateTime");
 
                     b.Property<string>("Creator");
-
-                    b.Property<string>("Icon");
-
-                    b.Property<bool>("NoCache");
 
                     b.Property<string>("PageDescribe");
 
                     b.Property<string>("PageShowName");
 
                     b.Property<string>("PageUrl");
-
-                    b.Property<string>("PageUrlName");
-
-                    b.Property<string>("Redirect");
-
-                    b.Property<string>("Title");
 
                     b.Property<DateTime>("UpdateDateTime");
 
@@ -150,13 +140,9 @@ namespace Rich.Order.Infrastructure.Migrations
 
                     b.Property<string>("Creator");
 
-                    b.Property<int>("LevelId");
-
                     b.Property<int>("PageId");
 
-                    b.Property<int>("ParentPageId");
-
-                    b.Property<string>("RoleIds");
+                    b.Property<string>("RoleId");
 
                     b.Property<DateTime>("UpdateDateTime");
 

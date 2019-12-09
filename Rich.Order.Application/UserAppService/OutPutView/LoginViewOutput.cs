@@ -18,5 +18,6 @@ namespace Rich.Order.Application.UserAppService
         public string Introduction { get; set; }
         public string Avatar { get; set; }
         public string Name { get; set; }
+        public List<PagePermissionViewModel> RoleRouters { get; set; }
     }
 }

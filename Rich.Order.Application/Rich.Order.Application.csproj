@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rich.Common.Base\Rich.Common.Base.csproj" />
     <ProjectReference Include="..\Rich.Order.Domain\Rich.Order.Domain.csproj" />
   </ItemGroup>
 

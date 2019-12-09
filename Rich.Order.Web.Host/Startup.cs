@@ -22,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Rich.Common.Base.AccessorDependencyInjection;
 using Rich.Common.Base.Configuration;
 using Rich.Common.Base.CoreStart;
 using Rich.Common.Base.RichAutoMapper;
@@ -29,8 +30,10 @@ using Rich.Common.Base.RichDapper;
 using Rich.Common.Base.RichSerilog;
 using Rich.Order.Application.CommonService;
 using Rich.Order.Application.MapProfile;
+using Rich.Order.Application.UserAppService;
 using Rich.Order.Domain.AuthHandler;
 using Rich.Order.Domain.User;
+using Rich.Order.Infrastructure.EntityConfiguration;
 using Rich.Order.Infrastructure.EntityFrameworkCore;
 using Rich.Order.Web.Host.Filter.ExceptionFilter;
 using Serilog.Events;
@@ -98,8 +101,8 @@ namespace Rich.Order.Web.Host
             return services.AddShawnService(option =>
             {
                 var iocManager = option._IocManager.BuilderContainer;
-                iocManager.RegistAppServiceToContianer();
-
+                iocManager.RegistAppServiceToContianer(_env);
+                iocManager.RegistInfrastrctureToContianer(_env);
                 var path = AppDomain.CurrentDomain.BaseDirectory;
                 //注册 
 
@@ -174,7 +177,6 @@ namespace Rich.Order.Web.Host
         }
         public static IServiceCollection AddConfigurationIdentity(this IServiceCollection service, IConfigurationRoot _appConfiguration)
         {
-
 
             //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

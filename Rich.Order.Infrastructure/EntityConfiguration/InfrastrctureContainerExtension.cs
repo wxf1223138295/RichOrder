@@ -1,19 +1,16 @@
-﻿using Autofac;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Text;
+using Autofac;
 using Microsoft.AspNetCore.Hosting;
-using Rich.Order.Application.RichOrderApplication;
-using Rich.Order.Application.UserAppService;
 using Rich.Order.Domain.Permissions;
+using Rich.Order.Infrastructure.RichRepository;
 
-namespace Rich.Order.Application.CommonService
+namespace Rich.Order.Infrastructure.EntityConfiguration
 {
-    public static class ApplicationContainerExtension
+    public static class InfrastrctureContainerExtension
     {
-        public static void RegistAppServiceToContianer(this ContainerBuilder containerBuilder, IHostingEnvironment env)
+        public static void RegistInfrastrctureToContianer(this ContainerBuilder containerBuilder, IHostingEnvironment env)
         {
             //var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
             //var path1 = env.ContentRootPath;
@@ -27,8 +24,8 @@ namespace Rich.Order.Application.CommonService
             //containerBuilder.RegisterAssemblyTypes(dataAccess)
             //    .Where(t => t.Name.EndsWith("Repository"))
             //    .AsImplementedInterfaces();
-            containerBuilder.RegisterType<RichUserAppService>()
-                .As<IRichUserAppService>()
+            containerBuilder.RegisterType<RichUserRepository>()
+                .As<IRichUserRepository>()
                 .InstancePerDependency();
         }
     }

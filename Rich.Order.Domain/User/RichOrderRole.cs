@@ -11,6 +11,10 @@ namespace Rich.Order.Domain.User
         public string Avatar { get; set; }
         public string Introduction { get; set; }
         public string ShowName { get; set; }
-        
+        /// <summary>
+        /// 分类角色
+        /// </summary>
+        public string RoleTokenName { get; set; }
+
     }
 }
